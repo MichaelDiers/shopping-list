@@ -1,5 +1,6 @@
 ﻿namespace ShoppingList.BaseItems.Tests.Factories
 {
+    using Moq;
     using ShoppingList.BaseItems.Contracts.Providers;
     using ShoppingList.BaseItems.Factories;
     using Xunit;
@@ -9,7 +10,8 @@
         [Fact]
         public void Create()
         {
-            var product = BaseItemProviderFactory.Create(BaseItemDatabaseFactory.Create());
+            var database = new Mock<IBaseItemDatabase>();
+            var product = BaseItemProviderFactory.Create(database.Object);
             Assert.IsAssignableFrom<IBaseItemProvider>(product);
         }
     }
