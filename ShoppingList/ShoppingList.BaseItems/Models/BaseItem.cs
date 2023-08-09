@@ -1,35 +1,60 @@
 ﻿namespace ShoppingList.BaseItems.Models
 {
-    using ShoppingList.BaseItems.Contracts.Models;
-
     /// <summary>
     ///     Describes a <see cref="BaseItem" />.
     /// </summary>
-    /// <seealso cref="ShoppingList.BaseItems.Contracts.Models.IBaseItem" />
-    public class BaseItem : IBaseItem
+    public class BaseItem
     {
         /// <summary>
-        ///     Gets or sets the identifier.
+        ///     Initializes a new instance of the <see cref="BaseItem" /> class.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="minRequiredQuantityInStock">The minimum required quantity in stock.</param>
+        /// <param name="userId">The user identifier.</param>
+        public BaseItem(
+            string id,
+            string name,
+            int minRequiredQuantityInStock,
+            string userId
+        )
+        {
+            this.Id = id;
+            this.Name = name;
+            this.MinRequiredQuantityInStock = minRequiredQuantityInStock;
+            this.UserId = userId;
+        }
+
+        /// <summary>
+        ///     Gets the identifier.
         /// </summary>
         /// <value>
         ///     The identifier.
         /// </value>
-        public string Id { get; set; } = "";
+        public string Id { get; }
 
         /// <summary>
-        ///     Gets or sets the minimum required quantity in stock.
+        ///     Gets the minimum required quantity in stock.
         /// </summary>
         /// <value>
         ///     The minimum required quantity in stock.
         /// </value>
-        public int MinRequiredQuantityInStock { get; set; }
+        public int MinRequiredQuantityInStock { get; }
 
         /// <summary>
-        ///     Gets or sets the name.
+        ///     Gets the name.
         /// </summary>
         /// <value>
         ///     The name.
         /// </value>
-        public string Name { get; set; } = "";
+        public string Name { get; }
+
+        /// <summary>
+        ///     Gets the user identifier.
+        /// </summary>
+        /// <value>
+        ///     The user identifier.
+        /// </value>
+        public string UserId { get; }
     }
 }

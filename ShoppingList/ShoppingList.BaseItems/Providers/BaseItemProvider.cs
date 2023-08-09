@@ -1,112 +1,80 @@
 ﻿namespace ShoppingList.BaseItems.Providers
 {
-    using ShoppingList.BaseItems.Contracts.Models;
-    using ShoppingList.BaseItems.Contracts.Providers;
+    using ShoppingList.BaseItems.Contracts;
     using ShoppingList.BaseItems.Models;
     using ShoppingList.BaseItems.Requests;
-    using ShoppingList.Shared.Exceptions;
 
     /// <summary>
-    ///     A provider for <see cref="BaseItem" />s.
+    ///     A provider for base items.
     /// </summary>
-    internal class BaseItemProvider : IBaseItemProvider
+    public class BaseItemProvider : IBaseItemProvider
     {
-        private readonly IBaseItemDatabase database;
-
         /// <summary>
-        ///     Initializes a new instance of the <see cref="BaseItemProvider" /> class.
+        ///     Creates a new <see cref="BaseItem" /> from the <paramref name="request" /> data.
         /// </summary>
-        /// <param name="database">The database for accessing <see cref="BaseItem" />s.</param>
-        public BaseItemProvider(IBaseItemDatabase database)
+        /// <param name="request">The request.</param>
+        /// <returns>A <see cref="Task" /> whose result is the created <see cref="BaseItem" />.</returns>
+        public Task<BaseItem> Create(CreateRequest request)
         {
-            this.database = database;
+            var baseItem = new BaseItem(
+                Guid.NewGuid().ToString(),
+                request.Name,
+                request.MinRequiredQuantityInStock,
+                request.UserId);
+            return Task.FromResult(baseItem);
         }
 
         /// <summary>
-        ///     Clears all items of the provider.
-        /// </summary>
-        /// <returns>A <see cref="Task" />.</returns>
-        public async Task ClearAsync()
-        {
-            await this.database.ClearAsync();
-        }
-
-        /// <summary>
-        ///     Creates a new <see cref="BaseItem" />.
-        /// </summary>
-        /// <param name="request">The basic <see cref="BaseItem" /> information.</param>
-        /// <returns>The created <see cref="BaseItem" />.</returns>
-        /// <exception cref="AlreadyExistsException">
-        ///     Is thrown if the <see cref="IBaseItem.Id" /> already exists in the
-        ///     database.
-        /// </exception>
-        public async Task<IBaseItem> CreateAsync(CreateRequest request)
-        {
-            var baseItem = new BaseItem
-            {
-                Id = Guid.NewGuid().ToString(),
-                MinRequiredQuantityInStock = request.MinRequiredQuantityInStock,
-                Name = request.Name
-            };
-
-            await this.database.CreateAsync(baseItem);
-            return baseItem;
-        }
-
-        /// <summary>
-        ///     Deletes the item with the specified identifier.
+        ///     Deletes the item specified by the identifier.
         /// </summary>
         /// <param name="id">The identifier.</param>
-        /// <returns>A <see cref="Task" />.</returns>
-        /// <exception cref="NotFoundException">Is thrown if no item with the specified identifier exists.</exception>
-        public async Task DeleteAsync(string id)
+        /// <returns>A <see cref="Task" /> whose result indicates success.</returns>
+        public Task Delete(string id)
         {
-            await this.database.DeleteAsync(id);
-        }
-
-        /// <summary>
-        ///     Reads the item with the specified identifier.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <returns>A <see cref="Task" /> whose result is the item if it exists.</returns>
-        /// <exception cref="NotFoundException">Is thrown if no item with the specified id does not exists.</exception>
-        public async Task<IBaseItem> ReadAsync(string id)
-        {
-            return await this.database.ReadAsync(id);
+            return Task.CompletedTask;
         }
 
         /// <summary>
         ///     Reads all items.
         /// </summary>
-        /// <returns>
-        ///     A <see cref="Task{T}" /> whose result is an <see cref="IEnumerable{T}" /> of <see cref="IBaseItem" />
-        ///     containing all available items.
-        /// </returns>
-        public async Task<IEnumerable<IBaseItem>> ReadAsync()
+        /// <returns>A <see cref="Task" /> whose result is a <see cref="IEnumerable{T}" /> of <see cref="BaseItem" />.</returns>
+        public Task<IEnumerable<BaseItem>> Read()
         {
-            return await this.database.ReadAsync();
+            var baseItems = Enumerable.Range(
+                    0,
+                    10)
+                .Select(
+                    i => new BaseItem(
+                        Guid.NewGuid().ToString(),
+                        $"Name_{i}",
+                        i,
+                        Guid.NewGuid().ToString()));
+            return Task.FromResult(baseItems);
         }
 
         /// <summary>
-        ///     Reads all items with the specified ids.
+        ///     Reads the item with the given id.
         /// </summary>
-        /// <param name="ids">The ids.</param>
-        /// <returns>A <see cref="Task" /> whose result contains the items with the specified id.</returns>
-        /// <exception cref="NotFoundException">Is thrown if any id has no matching <see cref="IBaseItem" />.</exception>
-        public async Task<IEnumerable<IBaseItem>> ReadAsync(IEnumerable<string> ids)
+        /// <param name="id">The identifier of the item.</param>
+        /// <returns>A <see cref="Task" /> whose result is the requested <see cref="BaseItem" />.</returns>
+        public Task<BaseItem> Read(string id)
         {
-            return await this.database.ReadAsync(ids);
+            var baseItem = new BaseItem(
+                id,
+                "Name",
+                10,
+                Guid.NewGuid().ToString());
+            return Task.FromResult(baseItem);
         }
 
         /// <summary>
-        ///     Updates the specified item.
+        ///     Updates the specified base item.
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <returns>A <see cref="Task" />.</returns>
-        /// <exception cref="NotFoundException">Is throw if no item with <see cref="IBaseItem.Id" /> exists.</exception>
-        public async Task UpdateAsync(IBaseItem item)
+        /// <param name="baseItem">The base item.</param>
+        /// <returns>A <see cref="Task" /> that indicates success.</returns>
+        public Task Update(BaseItem baseItem)
         {
-            await this.database.UpdateAsync(item);
+            return Task.CompletedTask;
         }
     }
 }
